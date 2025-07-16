@@ -3,7 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <title>视频自动去水印</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      text-align: center;
+      padding: 50px;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      display: inline-block;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    button {
+      padding: 10px 20px;
+      margin-left: 10px;
+    }
+    video {
+      margin-top: 20px;
+      max-width: 100%;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -12,65 +34,64 @@
     <button id="process-btn" disabled>开始去水印</button>
     <div id="video-container"></div>
   </div>
+
   <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.17/dist/ffmpeg.min.js"></script>
-  <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.17/dist/ffmpeg.min.js"></script>
-<script>
-  const { createFFmpeg, fetchFile } = FFmpeg;
-  const ffmpeg = createFFmpeg({ log: true });
+  <script>
+    const { createFFmpeg, fetchFile } = FFmpeg;
+    const ffmpeg = createFFmpeg({ log: true });
 
-  const videoInput = document.getElementById("video-input");
-  const processBtn = document.getElementById("process-btn");
-  const videoContainer = document.getElementById("video-container");
+    const videoInput = document.getElementById("video-input");
+    const processBtn = document.getElementById("process-btn");
+    const videoContainer = document.getElementById("video-container");
 
-  videoInput.addEventListener("change", async () => {
-    if (videoInput.files.length === 0) return;
-    processBtn.disabled = false;
-  });
+    videoInput.addEventListener("change", () => {
+      if (videoInput.files.length > 0) {
+        processBtn.disabled = false;
+      }
+    });
 
-  processBtn.addEventListener("click", async () => {
-    const file = videoInput.files[0];
-    if (!file) return;
+    processBtn.addEventListener("click", async () => {
+      const file = videoInput.files[0];
+      if (!file) return;
 
-    processBtn.innerText = "处理中...";
-    processBtn.disabled = true;
+      processBtn.disabled = true;
+      processBtn.innerText = "处理中...";
 
-    if (!ffmpeg.isLoaded()) {
-      await ffmpeg.load();
-    }
+      if (!ffmpeg.isLoaded()) {
+        await ffmpeg.load();
+      }
 
-    ffmpeg.FS("writeFile", "input.mp4", await fetchFile(file));
+      ffmpeg.FS("writeFile", "input.mp4", await fetchFile(file));
 
-    // 模糊视频中间区域
-    await ffmpeg.run(
-      "-i",
-      "input.mp4",
-      "-vf",
-      "delogo=x=100:y=100:w=200:h=100:show=0",
-      "output.mp4"
-    );
+      // 模糊中间位置模拟去水印
+      await ffmpeg.run(
+        "-i", "input.mp4",
+        "-vf", "delogo=x=100:y=100:w=200:h=100:show=0",
+        "output.mp4"
+      );
 
-    const data = ffmpeg.FS("readFile", "output.mp4");
-    const videoURL = URL.createObjectURL(
-      new Blob([data.buffer], { type: "video/mp4" })
-    );
+      const data = ffmpeg.FS("readFile", "output.mp4");
+      const videoURL = URL.createObjectURL(
+        new Blob([data.buffer], { type: "video/mp4" })
+      );
 
-    const video = document.createElement("video");
-    video.src = videoURL;
-    video.controls = true;
+      const video = document.createElement("video");
+      video.src = videoURL;
+      video.controls = true;
 
-    const download = document.createElement("a");
-    download.href = videoURL;
-    download.download = "去水印视频.mp4";
-    download.innerText = "下载去水印视频";
+      const download = document.createElement("a");
+      download.href = videoURL;
+      download.download = "去水印视频.mp4";
+      download.innerText = "下载去水印视频";
+      download.style.display = "block";
+      download.style.marginTop = "10px";
 
-    videoContainer.innerHTML = "";
-    videoContainer.appendChild(video);
-    videoContainer.appendChild(download);
+      videoContainer.innerHTML = "";
+      videoContainer.appendChild(video);
+      videoContainer.appendChild(download);
 
-    processBtn.innerText = "开始去水印";
-  });
-</script>
-</body>
-</html>
+      processBtn.innerText = "开始去水印";
+    });
+  </script>
 </body>
 </html>
