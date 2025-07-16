@@ -1,18 +1,18 @@
-<! DOCTYPE html>
-<html 郎="zh-CN">
-<头部>
-  <Meta 查塞特 ="UTF - 8" />
-    < 视频自动去水印头衔></头衔>
-   <链接    雷尔 ="stylesheet"    href ="style.css" />
-</ 头部 >
-<身体>
-  <迪文   班级  =商品；容器；>
-      < 视频自动去水印h1></h1>
-     <= 输入类型 "file" 我不知道。 = 视频输入与报价；接受 =" video/*" />
-    <按钮 我不知道。 =  开始去水印" process-btn" 残疾人></button>
-     <迪文   我不知道。  =视频容器；></迪文>
-  </ 迪文 >
-  <剧本  src ="https://unpkg.com/@ffmpeg/ffmpeg@0.11.17/dist/ffmpeg.min.js"></script>
-   <剧本  src="script.js"></剧本>
-</ 身体 >
-  </html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>视频自动去水印</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>视频自动去水印</h1>
+    <input type="file" id="video-input" accept="video/*" />
+    <button id="process-btn" disabled>开始去水印</button>
+    <div id="video-container"></div>
+  </div>
+  <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.17/dist/ffmpeg.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
